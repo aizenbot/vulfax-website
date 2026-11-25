@@ -5,6 +5,7 @@ import { Logo } from "@/components/layout/Logo";
 import { Button } from "@/components/ui/Button";
 import { defaultLocale, isLocale } from "@/config/i18n";
 import { getContent } from "@/lib/i18n";
+import { withBasePath } from "@/lib/utils";
 
 /** Localized 404 for unknown paths under /en or /ar. */
 export default async function NotFound() {
@@ -22,7 +23,7 @@ export default async function NotFound() {
         </p>
         <h1 className="font-display text-headline font-semibold text-fg">{notFound.title}</h1>
         <p className="max-w-md text-muted">{notFound.body}</p>
-        <Button href={`/${locale}`} variant="secondary" size="lg">
+        <Button href={withBasePath(`/${locale}`)} variant="secondary" size="lg">
           <ArrowLeft aria-hidden className="size-4 rtl:-scale-x-100" />
           {notFound.back}
         </Button>

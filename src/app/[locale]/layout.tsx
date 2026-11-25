@@ -31,7 +31,9 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const { meta } = getContent(locale);
-  const languages = Object.fromEntries(locales.map((l) => [localeConfig[l].htmlLang, `/${l}`]));
+  // Absolute URLs so a sub-path deploy (GitHub Pages /repo-name) stays correct.
+  const abs = (path: string) => `${siteConfig.url}${path}`;
+  const languages = Object.fromEntries(locales.map((l) => [localeConfig[l].htmlLang, abs(`/${l}`)]));
 
   return {
     metadataBase: new URL(siteConfig.url),
@@ -39,15 +41,15 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
     description: meta.description,
     applicationName: siteConfig.name,
     alternates: {
-      canonical: `/${locale}`,
-      languages: { ...languages, "x-default": "/en" },
+      canonical: abs(`/${locale}`),
+      languages: { ...languages, "x-default": abs("/en") },
     },
     openGraph: {
       type: "website",
       siteName: siteConfig.name,
       title: meta.title,
       description: meta.description,
-      url: `/${locale}`,
+      url: abs(`/${locale}`),
       locale: localeConfig[locale].ogLocale,
       alternateLocale: locales.filter((l) => l !== locale).map((l) => localeConfig[l].ogLocale),
     },

@@ -3,7 +3,7 @@
 import { Languages } from "lucide-react";
 import type { MouseEvent } from "react";
 import { localeConfig, locales, type Locale } from "@/config/i18n";
-import { cn } from "@/lib/utils";
+import { cn, withBasePath } from "@/lib/utils";
 
 interface LanguageSwitcherProps {
   locale: Locale;
@@ -18,7 +18,7 @@ interface LanguageSwitcherProps {
  */
 export function LanguageSwitcher({ locale, label, className, onNavigate }: LanguageSwitcherProps) {
   const target = locales.find((l) => l !== locale) ?? locale;
-  const href = `/${target}`;
+  const href = withBasePath(`/${target}`);
 
   function onClick(event: MouseEvent<HTMLAnchorElement>) {
     onNavigate?.();

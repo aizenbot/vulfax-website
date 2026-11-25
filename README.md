@@ -130,6 +130,25 @@ Each locale has its own title and description, Open Graph and Twitter cards, can
 
 Any Node.js host also works: run `npm run build && npm start` (Cache Components needs the Node.js runtime, not edge).
 
+## Deployment (GitHub Pages)
+
+`.github/workflows/deploy-pages.yml` builds a static copy and publishes it on every push to `main`. In the repository, go to **Settings → Pages** and set **Source** to "GitHub Actions". The base path and site URL come from GitHub automatically.
+
+To build the static copy locally:
+
+```bash
+NEXT_BASE_PATH=/vulfax-website NEXT_PUBLIC_SITE_URL=https://<user>.github.io/vulfax-website npm run build:pages
+# output: ./out
+```
+
+A static host cannot run server code, so the GitHub Pages version differs from the Vercel one in these ways:
+- `/` redirects to `/ar/` or `/en/` using a small `index.html` that reads the browser language. It replaces the proxy.
+- There is no `/api/contact`. The form uses `NEXT_PUBLIC_CONTACT_EMAIL` (set it under **Settings → Secrets and variables → Actions → Variables**) or shows its honest "not set up yet" notice.
+- There is no generated Open Graph image. `robots.txt` and `sitemap.xml` are written as static files.
+- Cache Components is off, and URLs end with `/`.
+
+`scripts/static-export.mjs` moves the server-only files aside during the build and always restores them afterwards.
+
 ## Future phases
 
 The architecture is ready for these, and none of them are built yet:

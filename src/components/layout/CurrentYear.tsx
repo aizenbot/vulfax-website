@@ -1,11 +1,14 @@
-import { cacheLife } from "next/cache";
+"use client";
+
+import { useSyncExternalStore } from "react";
+
+const subscribe = () => () => {};
 
 /**
- * Copyright year. Cached (Cache Components) and revalidated daily, so the
- * static shell never freezes the build-time year and nothing runs on the client.
+ * Copyright year, read in the browser so prerendered and statically exported
+ * pages never freeze the build year. Renders nothing on the server.
  */
-export async function CurrentYear() {
-  "use cache";
-  cacheLife("days");
-  return <>{new Date().getFullYear()}</>;
+export function CurrentYear() {
+  const year = useSyncExternalStore(subscribe, () => new Date().getFullYear(), () => null);
+  return <>{year}</>;
 }
