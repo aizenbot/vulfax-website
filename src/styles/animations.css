@@ -1,0 +1,162 @@
+/* Ambient, GPU-friendly keyframes (transform / opacity only). */
+
+@keyframes vx-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) scale(1.08);
+  }
+}
+
+@keyframes vx-drift-alt {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-5%, 4%, 0) scale(0.94);
+  }
+}
+
+@keyframes vx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vx-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes vx-pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes vx-scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes vx-sheen {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  60%,
+  100% {
+    transform: translateX(220%) skewX(-20deg);
+  }
+}
+
+.animate-drift {
+  animation: vx-drift 18s ease-in-out infinite;
+}
+.animate-drift-alt {
+  animation: vx-drift-alt 22s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: vx-spin 40s linear infinite;
+}
+.animate-spin-slower {
+  animation: vx-spin-reverse 60s linear infinite;
+}
+.animate-pulse-glow {
+  animation: vx-pulse-glow 7s ease-in-out infinite;
+}
+.animate-scroll-cue {
+  animation: vx-scroll-cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* Rotating conic border used by interactive cards (shown on hover/focus). */
+@property --vx-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes vx-border-rotate {
+  to {
+    --vx-angle: 360deg;
+  }
+}
+
+.border-glow {
+  position: relative;
+  isolation: isolate;
+}
+.border-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--vx-angle),
+    transparent 0deg,
+    rgb(101 117 255 / 0.9) 60deg,
+    rgb(0 212 255 / 0.8) 120deg,
+    transparent 180deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.border-glow:hover::before,
+.border-glow:focus-within::before {
+  opacity: 1;
+  animation: vx-border-rotate 4s linear infinite;
+}
+
+/* Ambient loops stop entirely for visitors who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift,
+  .animate-drift-alt,
+  .animate-spin-slow,
+  .animate-spin-slower,
+  .animate-pulse-glow,
+  .animate-scroll-cue,
+  .border-glow:hover::before,
+  .border-glow:focus-within::before {
+    animation: none !important;
+  }
+}
+
+/* Mobile: keep ambience but drop the expensive loops. */
+@media (max-width: 767px) {
+  .animate-spin-slow,
+  .animate-spin-slower {
+    animation: none;
+  }
+}
+
+/* Safety net: reveal animations must never leave content hidden.
+   Reduced-motion visitors (and no-JS visitors, via <noscript> in the
+   layout) always get fully visible content, whatever the observer does. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
