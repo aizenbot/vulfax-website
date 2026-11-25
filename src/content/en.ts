@@ -168,7 +168,7 @@ export const en: SiteContent = {
   },
   vision: {
     eyebrow: "Future vision",
-    lines: ["Every company", "is becoming", "a software company."],
+    lines: ["The future", "is built in software,", "and we build it with you."],
     body: "We are building VULFAX to be the engineering partner businesses grow with — across platforms, languages and markets.",
     cta: "Build it with us",
   },
